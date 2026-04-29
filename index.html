@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Generador de Perfil Profesional | CVGen</title>
+  <meta name="description" content="Herramienta interactiva para generar perfiles profesionales de CV mediante IA."/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+      Generador de Perfil
+    </div>
+    <span class="logo-badge">Formación Técnica</span>
+  </header>
+
+  <div class="content">
+    <div class="stepper">
+      <div class="stepper-track"><div class="stepper-bar" id="sbar"></div></div>
+      <div class="stepper-dots" id="sdots">
+        <button class="dot dot--active" data-s="0">
+          <span class="dot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/></svg></span>
+          <span class="dot-label">Especialidad</span>
+        </button>
+        <button class="dot" data-s="1">
+          <span class="dot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></span>
+          <span class="dot-label">Competencias</span>
+        </button>
+        <button class="dot" data-s="2">
+          <span class="dot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+          <span class="dot-label">Técnicas</span>
+        </button>
+        <button class="dot" data-s="3">
+          <span class="dot-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          <span class="dot-label">Datos</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PASO 1 -->
+    <section class="panel panel--active" id="p0">
+      <div class="panel-head">
+        <h1 class="panel-title">Selecciona tu especialidad</h1>
+        <p class="panel-sub">Indica tu nombre y el sector en el que te has formado.</p>
+      </div>
+      <div class="fg full" style="margin-bottom:1.25rem">
+        <label for="inp-name">Nombre completo</label>
+        <input class="fi" id="inp-name" placeholder="Ej: María López García"/>
+      </div>
+      <div class="sector-grid" id="sector-grid"></div>
+    </section>
+
+    <!-- PASO 2 -->
+    <section class="panel" id="p1">
+      <div class="panel-head">
+        <h2 class="panel-title">Competencias personales</h2>
+        <p class="panel-sub">Selecciona las competencias que mejor te definen.</p>
+      </div>
+      <div class="powers-grid" id="powers-grid"></div>
+      <div class="power-info" id="power-info"><p id="pinfo">Selecciona una competencia para ver su descripción.</p></div>
+    </section>
+
+    <!-- PASO 3 -->
+    <section class="panel" id="p2">
+      <div class="panel-head">
+        <h2 class="panel-title">Habilidades técnicas</h2>
+        <p class="panel-sub" id="tech-sub">Marca las competencias técnicas adquiridas durante tu formación.</p>
+      </div>
+      <div class="tech-grid" id="tech-grid"></div>
+    </section>
+
+    <!-- PASO 4 -->
+    <section class="panel" id="p3">
+      <div class="panel-head">
+        <h2 class="panel-title">Información complementaria</h2>
+        <p class="panel-sub">Intereses, idiomas y permisos de conducción.</p>
+      </div>
+      <div class="questions">
+        <div class="qcard">
+          <label for="q-libre">Intereses y actividades fuera del ámbito formativo</label>
+          <p class="qhint">Deportes, tecnología, música, voluntariado, etc.</p>
+          <textarea class="fi" id="q-libre" rows="2" placeholder="Me gusta el deporte, la tecnología y colaborar en actividades comunitarias..."></textarea>
+        </div>
+      </div>
+      <div style="margin-top:1rem">
+        <div class="fg full">
+          <label>Idiomas</label>
+          <div id="idiomas-box">
+            <div class="idioma-row"><input class="fi" placeholder="Idioma" value="Español"/><select class="fi"><option value="">Nivel</option><option value="A1">A1</option><option value="A2">A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option><option value="C2" selected>C2</option></select><button class="x-btn" disabled>✕</button></div>
+          </div>
+          <button class="add-btn" id="add-lang">+ Añadir idioma</button>
+        </div>
+        <div class="fg full" style="margin-top:1rem">
+          <label>Permiso de conducir</label>
+          <div class="toggles" id="tog-carnet">
+            <button class="tog" data-v="si">Sí</button>
+            <button class="tog" data-v="no">No</button>
+            <button class="tog tog--on" data-v="proceso">En proceso</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="nav">
+      <button class="btn btn-sec" id="btn-prev" disabled>← Anterior</button>
+      <button class="btn btn-pri" id="btn-next">Siguiente →</button>
+      <button class="btn btn-gen" id="btn-gen" style="display:none">Generar Prompt</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head"><h2>Prompt generado</h2><button class="x-btn" id="m-close">✕</button></div>
+    <div class="modal-body" id="m-body">
+      <div class="loader-wrap" id="loader" style="display:none"><div class="loader-spinner"></div><p class="loader-text">Generando perfil<span class="loader-dots"></span></p></div>
+      <div id="m-content" style="display:none">
+        <p class="modal-hint">Copia este texto y pégalo en <strong>Gemini</strong> para generar tu perfil profesional.</p>
+        <div class="prompt-out" id="prompt-out"></div>
+      </div>
+    </div>
+    <div class="modal-foot" id="m-foot" style="display:none"><button class="btn btn-copy" id="btn-copy">Copiar al portapapeles</button></div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
