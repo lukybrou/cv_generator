@@ -59,8 +59,27 @@
         <h2 class="panel-title">Competencias personales</h2>
         <p class="panel-sub">Selecciona las competencias que mejor te definen.</p>
       </div>
-      <div class="powers-grid" id="powers-grid"></div>
-      <div class="power-info" id="power-info"><p id="pinfo">Selecciona una competencia para ver su descripción.</p></div>
+
+      <div class="callout" id="power-info">
+        <p id="pinfo">Haz clic en las competencias sugeridas para añadirlas a tu perfil. También puedes escribir las tuyas propias.</p>
+      </div>
+
+      <div class="selected-area" id="selected-area">
+        <div class="area-label">Tus competencias seleccionadas</div>
+        <div class="selected-chips" id="selected-chips">
+          <span class="empty-msg" id="empty-msg">Aún no has seleccionado ninguna competencia</span>
+        </div>
+      </div>
+
+      <div class="custom-input-row">
+        <input class="fi" id="custom-power" type="text" placeholder="Añade tu propia competencia..."/>
+        <button class="btn-add-custom" id="btn-add-custom" type="button">+</button>
+      </div>
+
+      <div class="suggested-area">
+        <div class="area-label">Competencias sugeridas</div>
+        <div class="powers-grid" id="powers-grid"></div>
+      </div>
     </section>
 
     <!-- PASO 3 -->

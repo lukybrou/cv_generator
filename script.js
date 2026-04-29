@@ -51,7 +51,7 @@ const POWERS = [
 ];
 
 // === STATE ===
-let step = 0, sector = null, powers = new Set(), techs = new Set(), carnet = 'proceso';
+let step = 0, sector = null, selectedPowers = [], techs = new Set(), carnet = 'proceso';
 const TOTAL = 4;
 const $ = id => document.getElementById(id);
 const panels = [$('p0'), $('p1'), $('p2'), $('p3')];
@@ -60,6 +60,7 @@ const panels = [$('p0'), $('p1'), $('p2'), $('p3')];
 function init() {
   renderSectors();
   renderPowers();
+  setupCustomPower();
   setupNav();
   setupCarnet();
   setupLang();
@@ -82,29 +83,92 @@ function renderSectors() {
   };
 }
 
+// === POWERS: TWO-AREA SYSTEM ===
 function renderPowers() {
   const g = $('powers-grid');
   g.innerHTML = POWERS.map((p, i) =>
     `<button class="power" data-i="${i}" type="button">${p.text}</button>`
   ).join('');
   g.onclick = e => {
-    const b = e.target.closest('.power');
-    if (!b) return;
-    const i = +b.dataset.i;
-    b.classList.toggle('on');
-    powers.has(i) ? powers.delete(i) : powers.add(i);
-    showInfo(i);
+    const btn = e.target.closest('.power');
+    if (!btn) return;
+    const i = +btn.dataset.i;
+    selectPower(POWERS[i].text, POWERS[i].desc, i, btn);
   };
-  g.onmouseover = e => { const b = e.target.closest('.power'); if (b) showInfo(+b.dataset.i); };
-  g.onmouseout = () => resetInfo();
+  g.onmouseover = e => {
+    const btn = e.target.closest('.power');
+    if (btn) showPowerInfo(POWERS[+btn.dataset.i].text + ': ' + POWERS[+btn.dataset.i].desc);
+  };
+  g.onmouseout = () => resetPowerInfo();
 }
 
-function showInfo(i) {
-  $('pinfo').textContent = POWERS[i].text + ': ' + POWERS[i].desc;
+function selectPower(text, desc, suggestedIndex, btnEl) {
+  if (selectedPowers.find(p => p.text === text)) return;
+  selectedPowers.push({ text, desc: desc || '', suggestedIndex });
+  // Animate out the suggested button
+  if (btnEl) {
+    btnEl.classList.add('power--gone');
+    setTimeout(() => btnEl.style.display = 'none', 200);
+  }
+  renderSelectedChips();
+  showPowerInfo(text + (desc ? ': ' + desc : ''));
+}
+
+function removePower(text) {
+  const idx = selectedPowers.findIndex(p => p.text === text);
+  if (idx === -1) return;
+  const removed = selectedPowers.splice(idx, 1)[0];
+  // If it was a suggested power, show it again
+  if (removed.suggestedIndex !== undefined && removed.suggestedIndex >= 0) {
+    const btn = $('powers-grid').querySelector(`[data-i="${removed.suggestedIndex}"]`);
+    if (btn) {
+      btn.style.display = '';
+      btn.classList.remove('power--gone');
+    }
+  }
+  renderSelectedChips();
+}
+
+function renderSelectedChips() {
+  const container = $('selected-chips');
+  const empty = $('empty-msg');
+  if (selectedPowers.length === 0) {
+    container.innerHTML = '<span class="empty-msg" id="empty-msg">Aún no has seleccionado ninguna competencia</span>';
+    return;
+  }
+  container.innerHTML = selectedPowers.map(p =>
+    `<span class="chip" data-text="${p.text}">${p.text}<button class="chip-x" type="button" title="Eliminar">✕</button></span>`
+  ).join('');
+  container.querySelectorAll('.chip-x').forEach(x => {
+    x.onclick = (e) => {
+      e.stopPropagation();
+      const chip = x.closest('.chip');
+      removePower(chip.dataset.text);
+    };
+  });
+}
+
+function setupCustomPower() {
+  const input = $('custom-power');
+  const btn = $('btn-add-custom');
+  const addCustom = () => {
+    const val = input.value.trim();
+    if (!val) return;
+    if (selectedPowers.find(p => p.text.toLowerCase() === val.toLowerCase())) { input.value = ''; return; }
+    selectPower(val, '', -1, null);
+    input.value = '';
+    input.focus();
+  };
+  btn.onclick = addCustom;
+  input.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); addCustom(); } };
+}
+
+function showPowerInfo(msg) {
+  $('pinfo').textContent = msg;
   $('power-info').classList.add('active');
 }
-function resetInfo() {
-  $('pinfo').textContent = 'Selecciona una competencia para ver su descripción.';
+function resetPowerInfo() {
+  $('pinfo').textContent = 'Haz clic en las competencias sugeridas para añadirlas a tu perfil. También puedes escribir las tuyas propias.';
   $('power-info').classList.remove('active');
 }
 
@@ -205,8 +269,7 @@ function generate() {
   setTimeout(() => {
     const nombre = $('inp-name').value.trim() || '[Nombre]';
     const sectorName = SECTORS.find(s => s.id === sector)?.name || '[Sector]';
-    const pwrs = [...powers].map(i => POWERS[i].text);
-    const pwrText = pwrs.length ? pwrs.join(', ') : 'No indicadas';
+    const pwrText = selectedPowers.length ? selectedPowers.map(p => p.text).join(', ') : 'No indicadas';
     const techText = techs.size ? [...techs].join(', ') : 'No indicadas';
     const hobby = ($('q-libre')?.value || '').trim() || 'No indicado';
     const langs = [];
